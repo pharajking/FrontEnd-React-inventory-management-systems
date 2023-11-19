@@ -1,24 +1,39 @@
-import logo from './logo.svg';
-import './App.css';
+import './assets/css/styles.css'
+import 'bootstrap/dist/css/bootstrap.min.css'
+import 'bootstrap/dist/js/bootstrap.bundle.min'
+import './assets/css/style.scss'
+import { RouterProvider } from 'react-router-dom';
+import ProjectRouter from './components/router/ProjectRouter';
+import { useEffect, useState } from 'react';
+import PublicRouter from './components/router/PublicRouter';
+import axios from 'axios';
+import './AxiosInterceptor';
 
 function App() {
+  const tokenExists = !!localStorage.token; // Check if token exists in localStorage
+
+  // Use the tokenExists value to set auth
+  const [auth, setAuth] = useState(tokenExists);
+
+  useEffect(() => {
+    console.log("localStorage.token:", localStorage.token);
+
+    if (tokenExists) {
+      console.log("Setting auth to true");
+      //axios.defaults.headers.common['Authorization'] = `Bearer ${localStorage.token}`;
+    }
+
+    console.log("auth:", auth);
+  }, [tokenExists]); // Use tokenExists as a dependency
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      {auth ? (
+        <RouterProvider router={ProjectRouter} />
+      ) : (
+        <RouterProvider router={PublicRouter} />
+      )}
+    </>
   );
 }
 
